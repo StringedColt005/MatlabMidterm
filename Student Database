@@ -1,0 +1,59 @@
+% Author Name: Joshua Oliveira
+% Email: olivei64@rowan.edu
+% Course: MATLAB Programming - Fall 2024
+% Assignment: Midterm
+% Task: Ace the Midterm
+% Date: November 13, 2024
+classdef StudentDatabase
+    properties
+        Students = [];
+    end
+    
+    methods
+        % Add a student to the database
+        function obj = addStudent(obj, student)
+            obj.Students = [obj.Students, student];
+        end
+        
+        % Find a student by their ID
+        function student = findStudentByID(obj, student_id)
+            student = [];
+            for i = 1:length(obj.Students)
+                if obj.Students(i).ID == student_id
+                    student = obj.Students(i);
+                    return;
+                end
+            end
+        end
+        
+        % Get a list of students by major
+        function students = getStudentsByMajor(obj, major)
+            students = [];
+            for i = 1:length(obj.Students)
+                if strcmp(obj.Students(i).Major, major)
+                    students = [students, obj.Students(i)];
+                end
+            end
+        end
+        
+        % Save the database to a .mat file
+        function saveToFile(obj, filename)
+            try
+                save(filename, 'obj');
+            catch ME
+                fprintf('Error saving to file: %s\n', ME.message);
+            end
+        end
+        
+        % Load the database from a .mat file
+        function obj = loadFromFile(obj, filename)
+            try
+                loadedData = load(filename);
+                obj = loadedData.obj;  % Load the object
+            catch ME
+                fprintf('Error loading from file: %s\n', ME.message);
+                obj = StudentDatabase();  % Return an empty database
+            end
+        end
+    end
+end
