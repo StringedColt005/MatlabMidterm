@@ -1,0 +1,91 @@
+% Author Name: Joshua Oliveira
+% Email: olivei64@rowan.edu
+% Course: MATLAB Programming - Fall 2024
+% Assignment: Midterm
+% Task: Ace the Midterm
+% Date: November 13, 2024
+% Data Visualizations
+
+function plotGPADistribution(students)
+    % Plot GPA distribution histogram
+    gpas = [students.GPA];
+    histogram(gpas, 10);
+    title('GPA Distribution');
+    xlabel('GPA');
+    ylabel('Frequency');
+end
+
+function plotAverageGPAByMajor(students)
+    % Plot average GPA by major
+    majors = unique({students.Major});
+    avgGPA = zeros(1, length(majors));
+    
+    for i = 1:length(majors)
+        majorStudents = students(strcmp({students.Major}, majors{i}));
+        avgGPA(i) = mean([majorStudents.GPA]);
+    end
+    
+    bar(avgGPA);
+    set(gca, 'XTickLabel', majors);
+    xtickangle(45);
+    title('Average GPA by Major');
+    xlabel('Major');
+    ylabel('Average GPA');
+end
+
+function plotAgeDistribution(students)
+    % Plot age distribution of students
+    ages = [students.Age];
+    histogram(ages, 10);
+    title('Age Distribution');
+    xlabel('Age');
+    ylabel('Frequency');
+end
+
+% Initialize the student database
+db = StudentDatabase();
+
+% Add sample (totally not real) students to the database
+student1 = Student(1, 'Travis Schreiber', 21, 3.7, 'Computer Science');
+student2 = Student(2, 'Michael OLeary', 20, 3.9, 'Biology');
+student3 = Student(3, 'Jim Mahoney', 19, 3.8, 'Computer Science');
+student4 = Student(4, 'Joshua Oliveira', 18, 4.0, 'Physics');
+
+db = db.addStudent(student1);
+db = db.addStudent(student2);
+db = db.addStudent(student3);
+db = db.addStudent(student4);
+
+%File dealings: saving and loading
+db.saveToFile('students.mat');
+db = db.loadFromFile('students.mat');
+
+%Search using Student ID
+student = db.findStudentByID(2);  % Searching for student with ID 2
+if ~isempty(student)
+    disp('Found student with ID 2:');
+    student.displayInfo();
+else
+    disp('Student with ID 2 not found.');
+end
+
+% Get Students by Major (Computer Science)
+csStudents = db.getStudentsByMajor('Computer Science');
+disp('Computer Science Students:');
+for i = 1:length(csStudents)
+    csStudents(i).displayInfo();
+end
+
+% Visualizations
+
+%GPA Distribution
+figure;
+plotGPADistribution(db.Students);
+
+%Average GPA by Major
+figure;
+plotAverageGPAByMajor(db.Students);
+
+%Age Distribution
+figure;
+plotAgeDistribution(db.Students);
